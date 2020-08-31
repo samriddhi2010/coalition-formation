@@ -1,0 +1,85 @@
+import itertools
+import csv
+
+#the number of agents
+x=int(input("enter the number of agents:"))
+a=list(range(1,x+1))
+print ("who are the agents?",a)
+
+#create the subsets
+orig=[]
+x=len(a)
+for i in range(0,x+1):
+ for subset in itertools.combinations(a,i):
+      orig.append(list(subset))
+print ("subsets are:",orig)
+
+#read the coalition values from the text file "filename"
+val=[]
+with open('filename.txt') as f:
+
+       lines = f.read().splitlines()
+for i in lines:
+   val.append(i)
+   for i in range(0, len(val)):
+       val[i] = int(val[i])
+print ("coalition values:",val)
+
+#create the partitions
+def partition(collection):
+   if len(collection) == 1:
+       yield [ collection ]
+       return
+
+   first = collection[0]
+   for smaller in partition(collection[1:]):
+       for n, subset in enumerate(smaller):
+           yield smaller[:n] + [[ first ] + subset]  + smaller[n+1:]
+       yield [ [ first ] ] + smaller
+
+set_partition=[]
+for n, p in enumerate(partition(a), 1):
+
+   
+   set_partition.append(p)
+print ("Coalition structure:",set_partition)
+
+
+def worker(alist, blist, val,clist):
+    clist=[]
+    ind=[]
+    value=0
+    c=0
+    for j in blist:
+        for i in alist:
+            if j==i:
+                index=blist.index(j)
+                v=value+val[index]
+                clist.append(v)
+                c=c+1
+    
+    return clist
+   
+
+
+l3=[]
+for j in set_partition:
+    
+            p=worker(j,orig,val,l3)
+            l3.append(p)
+print (l3)
+CS_val=[]
+for i in l3:
+    CS_val.append(sum(i))
+maxCS=CS_val.index(max(CS_val))
+print("maxCS",set_partition[maxCS])
+print("with value",max(CS_val))
+
+#create the csv file with values
+row_list = [["subsets", "subset_val", "CS", "CS_val"],
+            orig,
+            val,
+            set_partition, CS_val, ]
+with open('filename.csv', 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerows(row_list)
