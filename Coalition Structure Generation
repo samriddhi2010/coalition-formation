@@ -1,12 +1,15 @@
+##### This is a brute force search method of finding the optimal coalition structure######
+
 import itertools
 import csv
 
-#the number of agents
+#### Initializing the number of agents#####
+### print the agent set@@@
 x=int(input("enter the number of agents:"))
 a=list(range(1,x+1))
 print ("who are the agents?",a)
 
-#create the subsets
+#####create the coalitions (the subsets of the main set "a")#######
 orig=[]
 x=len(a)
 for i in range(0,x+1):
@@ -14,7 +17,7 @@ for i in range(0,x+1):
       orig.append(list(subset))
 print ("subsets are:",orig)
 
-#read the coalition values from the text file "filename"
+######read the coalition values from the text file "filename"##########
 val=[]
 with open('filename.txt') as f:
 
@@ -25,7 +28,7 @@ for i in lines:
        val[i] = int(val[i])
 print ("coalition values:",val)
 
-#create the partitions
+##########create the disjoint partitions of the agent set "a"########
 def partition(collection):
    if len(collection) == 1:
        yield [ collection ]
